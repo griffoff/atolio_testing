@@ -112,7 +112,7 @@ def main():
         df["Auto Test User"] = get_user_name()
         df["Auto Test Date"] = timestamp        
         df["Auto Test Confidence"] = F1.numpy() * 100  # Convert F1 score to percentage
-        df["Auto Test Outcome"] = df["percentage"].apply(lambda x: "pass" if x >= 90 else "fail")
+        df["Auto Test Outcome"] = df["Auto Test Confidence"].apply(lambda x: "pass" if x >= 90 else "fail")
         
         # Save results to Excel
         output_filename = os.path.join(script_dir, f"{sheet_name}_ux2_{timestamp}.xlsx")
