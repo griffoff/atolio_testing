@@ -78,17 +78,23 @@ def main():
         df = pd.read_excel(excel_file, sheet_name=sheet_name)
         print(df.head())
 
+        question_column_name = "QUESTION"
+        answer_column_name = "EXPECTED ANSWER"
+        # question_column_name = "USER PROMPT/QUESTION (input)\n(pre-populate your questions or copy/paste as you test here)"
+        # answer_column_name = "EXPECTED ANSWER (uses the 'expected knowledge base url' to answer the question - provided by testing team)"
+        
+
         # Ensure required columns are present
         required_columns = [
-            "USER PROMPT/QUESTION (input)\n(pre-populate your questions or copy/paste as you test here)",
-            "EXPECTED ANSWER (uses the 'expected knowledge base url' to answer the question - provided by testing team)"
+            question_column_name,
+            answer_column_name
         ]
         if not set(required_columns).issubset(df.columns):
             raise ValueError(f"Excel file must contain the required columns: {required_columns}")
 
         # Extract questions and references
-        questions = df["USER PROMPT/QUESTION (input)\n(pre-populate your questions or copy/paste as you test here)"].astype(str).tolist()
-        references = df["EXPECTED ANSWER (uses the 'expected knowledge base url' to answer the question - provided by testing team)"].astype(str).tolist()
+        questions = df[question_column_name].astype(str).tolist()
+        references = df[answer_column_name].astype(str).tolist()
 
         # Run Playwright and fetch results
         with sync_playwright() as playwright:
