@@ -46,6 +46,20 @@ def get_atolio_answers(playwright, context, url, questions):
         page.close()  # Close the page to clean up for the next question
     return atolio_answers
 
+def get_user_name(): 
+    username = "Unknown"
+    try:
+        # os.getlogin() gets the user logged into the controlling terminal
+        username = os.getlogin()
+        print(f"The current user is: {username}")
+    except OSError:
+        # Fallback for environments without a controlling terminal (e.g., some services)
+        # On Windows, 'USERNAME' is the standard environment variable.
+        username = os.environ.get('USERNAME')
+        print(f"The current user (from environment variable) is: {username}")
+    
+    return username
+
 
 def main():
     try:
@@ -89,9 +103,11 @@ def main():
         # Calculate BERTScore
         print("Calculating BERTScore...")
         P, R, F1 = score(atolio_answers, references, lang='en', verbose=True)
-        df["percentage"] = F1.numpy() * 100  # Convert F1 score to percentage
-        df["Macros - Outcome PASS / FAIL"] = df["percentage"].apply(lambda x: "pass" if x >= 90 else "fail")
-
+        df["Auto Test User"] = get_user_name()
+        df["Auto Test Date"] = datetime.date()        
+        df["Auto Test Confidence"] = F1.numpy() * 100  # Convert F1 score to percentage
+        df["Auto Test Outcome"] = df["percentage"].apply(lambda x: "pass" if x >= 90 else "fail")
+        
         # Save results to Excel
         output_filename = os.path.join(script_dir, f"{sheet_name}_ux2_{timestamp}.xlsx")
         df.to_excel(output_filename, index=False)
