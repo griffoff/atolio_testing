@@ -110,7 +110,7 @@ def main():
         print("Calculating BERTScore...")
         P, R, F1 = score(atolio_answers, references, lang='en', verbose=True)
         df["Auto Test User"] = get_user_name()
-        df["Auto Test Date"] = datetime.date()        
+        df["Auto Test Date"] = timestamp        
         df["Auto Test Confidence"] = F1.numpy() * 100  # Convert F1 score to percentage
         df["Auto Test Outcome"] = df["percentage"].apply(lambda x: "pass" if x >= 90 else "fail")
         
