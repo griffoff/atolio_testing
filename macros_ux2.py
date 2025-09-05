@@ -3,6 +3,7 @@ from io import BytesIO
 import pandas as pd
 from bert_score import score
 from datetime import datetime
+from urllib.parse import quote
 import time
 import sys
 import os
@@ -64,9 +65,11 @@ def get_user_name():
 def main():
     try:
         # Parse command-line arguments
-        excel_file = sys.argv[1]  # Path to the Excel file
+        excel_file_raw = sys.argv[1]  # Path to the Excel file
         sheet_name = sys.argv[2]  # Sheet name
         url = sys.argv[3]  # URL (e.g., https://test-atolio.cengage.info/)
+
+        excel_file = quote(excel_file_raw, safe='/:') # safe=':' keeps drive letters etc. safe
         
         print(excel_file)
         print(sheet_name)
